@@ -2118,17 +2118,52 @@ function genRecordTable() {
     return "Can not read record.txt";
   }
 
+  // enhance records with total and average hearts per filename
+  var dayMapCount = {};
+  var renderRecords = [];
+  for (var filename in record) {
+    (function (filename) {
+      if (filename !== "hearts_count") {
+        var totalDay = 0;
+        var totalCount = 0;
+        var recordElement = record[filename];
+        for (var day in recordElement.receiveCounts) {
+          var dayCount = recordElement.receiveCounts[day];
+
+          if (dayMapCount[+day] === undefined) {
+            dayMapCount[+day] = 0;
+          }
+          dayMapCount[+day] += dayCount;
+
+          totalDay++;
+          totalCount += dayCount;
+        }
+        var avg = 0;
+        if (totalDay !== 0) {
+          avg = (totalCount / totalDay).toFixed(1);
+        }
+        recordElement.all = totalCount;
+        recordElement.avg = avg;
+        recordElement.filename = filename;
+        renderRecords.push(recordElement);
+      }
+    })(filename);
+  }
+
+  // sort by total
+  renderRecords.sort(function (a, b) {
+    return a.all - b.all;
+  });
+
+  // render records
   var html = "<html><body>";
   html += "<table>";
   html += "<tr><td>UserImage</td><td>UserImage2</td><td>All</td><td>Avg</td><td>Day</td></tr>";
-  var dayMapCount = {};
-  for (var filename in record) {
-    if (filename === "hearts_count") {
-      continue;
-    }
+  for (var i = 0; i < renderRecords.length; i += 1) {
+    filename = renderRecords[i].filename;
     html += "<tr>";
     // user image
-    html += "<td><img src=" + filename + "'..' /></td>";
+    html += "<td><img src='" + filename + "' /></td>";
     // user image2
     var filePath = getStoragePath()+"/tsum_record/" + filename;
     var tmpImg = openImage(filePath);
@@ -2139,15 +2174,15 @@ function genRecordTable() {
     var totalDay = 0;
     var totalCount = 0;
     var tmpHtml = "";
-    for (var day in record[filename].receiveCounts) {
+    for (var day in renderRecords[i].receiveCounts) {
       var dayTime = new Date(+day * 86400000);
       var dayStr = getDayTimeString(dayTime);
-      var dayCount = record[filename].receiveCounts[day];
+      var dayCount = renderRecords[i].receiveCounts[day];
 
       if (dayMapCount[+day] === undefined) {dayMapCount[+day] = 0;}
       dayMapCount[+day] += dayCount;
 
-      tmpHtml += "<td>" + dayStr + ":" + dayCount + "</td>";
+      tmpHtml += "<td>" + dayStr + "</td><td>" + dayCount + "</td>";
       totalDay++;
       totalCount += dayCount;
     }
