@@ -601,6 +601,8 @@ function log() {
             var arg = arguments[k];
             params += arg.replace(/'/g, '"') + ' ';
         }
+    } else if (typeof arguments === 'string') {
+        params += arguments;
     }
     if (typeof JavaScriptInterface !== "undefined" && typeof JavaScriptInterface.runScript === "function") {
         JavaScriptInterface.runScript('console.log(\'' + params + '\')');
