@@ -1,0 +1,65 @@
+name: script-tsumbeta-actions
+run-name: Build and release TsuBeta script
+on:
+  push:
+#    paths:
+#      - scripts/com.r2studio.TsumBeta/**
+jobs:
+  build-script:
+    name: Build script
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./scripts/com.r2studio.TsumBeta
+    steps:
+      - name: Check out the repository to the runner
+        uses: actions/checkout@v4
+      - name: Make the script files executable
+        run: chmod +x build.sh
+      - name: Compile sources and create index.zip
+        run: ./build.sh
+      - name: Archive index.zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: index-zip
+          path: scripts/com.r2studio.TsumBeta/index.zip
+          retention-days: 1
+          overwrite: true
+  release-script:
+    name: Release script
+    runs-on: ubuntu-latest
+    needs: build-script
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: index-zip
+      - name: Test artifact download
+        run: ls -R
+      - name: Delete old release and its tag
+        uses: dev-drprasad/delete-tag-and-release@v1.1
+        with:
+          tag_name: tsumbeta_latest_dev
+          delete_release: true
+          github_token: ${{ secrets.GITHUB_TOKEN }} # (required) - a GitHub token with write access to the repo where tags and releases will be searched and deleted
+        continue-on-error: true
+      - name: Release artifact
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: tsumbeta_latest_dev
+          release_name: Latest TsumBeta development release
+          draft: false
+          prerelease: true
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ./index.zip
+          asset_name: index.zip
+          asset_content_type: application/zip
