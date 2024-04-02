@@ -2,12 +2,15 @@ name: script-tsumbeta-actions
 run-name: Build and release TsuBeta script
 on:
   push:
-#    paths:
-#      - scripts/com.r2studio.TsumBeta/**
+    branches:
+      - main
+    paths:
+      - scripts/com.r2studio.TsumBeta/**
 jobs:
   build-script:
     name: Build script
     runs-on: ubuntu-latest
+    if: github.repository == 'mcs/robotmon-scripts'
     defaults:
       run:
         working-directory: ./scripts/com.r2studio.TsumBeta
@@ -39,6 +42,7 @@ jobs:
   release-script:
     name: Release script
     runs-on: ubuntu-latest
+    if: github.repository == 'mcs/robotmon-scripts'
     needs: build-script
     steps:
       - name: Download artifact
