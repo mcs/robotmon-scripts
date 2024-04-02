@@ -14,6 +14,17 @@ jobs:
     steps:
       - name: Check out the repository to the runner
         uses: actions/checkout@v4
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+      - name: Cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - name: Make the script files executable
         run: chmod +x build.sh
       - name: Compile sources and create index.zip
