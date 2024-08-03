@@ -1217,6 +1217,7 @@ function Tsum(isJP, detect, logs) {
   this.autobuyBoxes = 0;
   this.noSkillLastFeverSec = 0;
   this.claimAllWithoutCoins = false;
+  this.skillSpam = false;
   this.nextMonitorExecution = 0;
   this.lastVisitedPages = {init1: true, init2: true, init3: true};  // trigger initial monitor call on script startup
   this.init(detect);
@@ -1405,7 +1406,7 @@ Tsum.prototype.tapUp = function(xy, during) {
   tapUp(rxy.x, rxy.y, during);
 }
 
-Tsum.prototype.linkTsums = function(path) {
+Tsum.prototype.linkTsums = function(path, board) {
   for (var j = 0; j < path.length; j++) {
     var point = path[j];
     var x = Math.floor(this.playOffsetX + (point.x + Config.tsumWidth / 2) * this.playWidth / this.playResizeWidth);
@@ -1418,9 +1419,16 @@ Tsum.prototype.linkTsums = function(path) {
       tapUp(x, y, 10);
     }
   }
+  if (this.skillSpam) {
+    if (this.useSkill(board)) {
+      if (this.useSkill(board)) {
+        this.useSkill(board);
+      }
+    }
+  }
 }
 
-Tsum.prototype.link = function(paths) {
+Tsum.prototype.link = function(paths, board) {
   var isBubble = false;
   for (var i in paths) {
     var path = paths[i];
@@ -1429,7 +1437,7 @@ Tsum.prototype.link = function(paths) {
     if (path.length >= 12) {
       isBubble = true;
     }
-    this.linkTsums(path);
+    this.linkTsums(path, board);
   }
   return isBubble;
 }
@@ -2013,7 +2021,7 @@ Tsum.prototype.taskPlayGameQuick = function() {
     log(this.logs.calculationPathStart);
     var paths = calculatePaths(board, this.logs);
     paths = paths.splice(0, 6);
-    var isBubble = this.link(paths);
+    var isBubble = this.link(paths, board);
     if (isBubble) {
       log(this.logs.bubbleGenerated);
       clearBubbles++;
@@ -2819,6 +2827,7 @@ function start(settings) {
   ts.noSkillLastFeverSec = settings['noSkillLastFeverSec'];
   ts.claimAllWithoutCoins = settings['claimAllWithoutCoins'];
   ts.tsumMonitorUrl = settings['tsumMonitorUrl'] || "";
+  ts.skillSpam = !!settings['skillSpam'];
 
   if (!checkFunction(TaskController)) {
     console.log("File lose...");

@@ -327,7 +327,14 @@ var settings = [
             title: 'URL to Tsum Monitor',
             title_zh_TW: '链接到 Tsum 监视器',
             default: ""
+        },
+        {
+            key: 'skillSpam',
+            title: 'Spam skill button',
+            title_zh_TW: '自動送愛心',
+            default: false
         }
+
     ]
 ];
 
