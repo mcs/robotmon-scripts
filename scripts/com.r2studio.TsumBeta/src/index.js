@@ -1104,7 +1104,7 @@ function calculatePaths(board, logs) {
     if (a.length < b.length) { return 1; }
     return -1;
   });
-  log(logs.calculatedPath, paths.length);
+  debug(logs.calculatedPath, paths.length);
   return paths;
 }
 
@@ -1684,7 +1684,7 @@ Tsum.prototype.checkGameItem = function() {
     }
     this.sleep(500);
   }
-  log(this.logs.checkBonusItems, isItemsOn);
+  debug(this.logs.checkBonusItems, isItemsOn);
 }
 
 Tsum.prototype.goGamePlayingPage = function() {
@@ -2056,7 +2056,7 @@ Tsum.prototype.scanBoardQuick = function() {
   }
 
   var points = findTsums(srcImg);
-  log(this.logs.recognitionStart);
+  debug(this.logs.recognitionStart);
   var tcs = classifyTsums(points);
   tcs.sort(function(a, b) { return a.points.length > b.points.length ? -1: 1; });
   var board = [];
@@ -2077,9 +2077,9 @@ Tsum.prototype.scanBoardQuick = function() {
     saveImage(srcImg, this.storagePath + "/tmp/" + ts.runTimes + "-boardImg.jpg");
   }
   releaseImage(srcImg);
-  log(this.logs.recognizedTsums, board.length);
+  debug(this.logs.recognizedTsums, board.length);
   sleep(30);
-  log(this.logs.recognitionTime, usingTimeString(startTime));
+  debug(this.logs.recognitionTime, usingTimeString(startTime));
 
   if (this.isPause) {
     this.sleep(Config.gameContinueDelay);
@@ -2108,12 +2108,12 @@ Tsum.prototype.taskPlayGameQuick = function() {
     if (board == null) {
       break;
     }
-    log(this.logs.calculationPathStart);
+    debug(this.logs.calculationPathStart);
     var paths = calculatePaths(board, this.logs);
     paths = paths.splice(0, 6);
     var isBubble = this.link(paths);
     if (isBubble) {
-      log(this.logs.bubbleGenerated);
+      debug(this.logs.bubbleGenerated);
       clearBubbles++;
     }
     if (paths.length < 3) {
@@ -2126,7 +2126,7 @@ Tsum.prototype.taskPlayGameQuick = function() {
     }
     // click bubbles
     if (this.clearBubbles && clearBubbles >= 2) {
-      log(this.logs.clearBubbles);
+      debug(this.logs.clearBubbles);
       clearBubbles = 0;
       // only clearing lower area in order to speed up the cleaning process
       this.clearAllBubbles(0, 0, (Button.gameBubblesFrom.y + Button.gameBubblesTo.y) / 2);
@@ -2138,10 +2138,9 @@ Tsum.prototype.taskPlayGameQuick = function() {
     if (this.isPause) {
       this.sleep(300);
     }
-    if (this.useSkill(board)) {
-      clearBubbles++;
-      if (this.useSkill(board)) {
-        this.useSkill(board);
+    while (this.useSkill(board)) {
+      if (this.skillType !== "block_cpt_ly_s") {
+        clearBubbles++;
       }
     }
 
@@ -2854,7 +2853,7 @@ Tsum.prototype.requestTsumMonitor = function(force) {
   if (this.nextMonitorExecution <= Date.now() && Object.keys(this.lastVisitedPages).length >= 2) {
     log("TsumMonitor - GET", url);
     var response = httpClient('GET', url, '', {});
-    log("TsumMonitor - Response:", response);
+    log("TsumMonitor - Response:", response.trim());
     this.nextMonitorExecution = Date.now() + 60 * 1000;
     this.lastVisitedPages = {};
   } else {
