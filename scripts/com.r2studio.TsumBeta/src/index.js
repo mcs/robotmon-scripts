@@ -2812,7 +2812,7 @@ Tsum.prototype.taskAutoBuyBoxes = function() {
       } else {
         countSamePage = 0;
       }
-      if (page !== lastPage && page === Page.BoxPurchasedPage) {
+      if (page !== lastPage && page.name === "ConfirmPurchasePage") {
         this.autobuyBoxes--;
         log("Bought box.", this.autobuyBoxes, "left");
       } else if (page.name === Page.Received.name
