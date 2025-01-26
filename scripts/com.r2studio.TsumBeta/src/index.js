@@ -1812,7 +1812,7 @@ Tsum.prototype.clearAllBubbles = function(startDelay, endDelay, fromY, delayBetw
   }
 }
 
-Tsum.prototype.useCinderellaSkill = function() {
+Tsum.prototype.useCinderellaSkillV1 = function() {
   var path, offset, y;
   for (var i = 0; i < 5; i += 1) {
     for (offset = 0; offset <= 200; offset += 200) {
@@ -1834,7 +1834,36 @@ Tsum.prototype.useCinderellaSkill = function() {
     }
   }
   this.sleep(3000);
-  this.clearAllBubbles(10, 50, (Button.gameBubblesFrom.y + Button.gameBubblesTo.y) / 2, 200);
+  this.clearAllBubbles(10, 50, (Button.gameBubblesFrom.y + Button.gameBubblesTo.y) / 2, 300);
+}
+
+Tsum.prototype.useCinderellaSkillV2 = function() {
+  var path, offset, y;
+  for (var i = 0; i < 5; i += 1) {
+    for (offset = 0; offset <= 200; offset += 200) {
+      path = [];
+      for (y = 170; y >= 70; y -= 20)
+        path.push({x: Math.abs(offset - 10), y: y});
+
+      for (y = 60; y <= 180; y += 20)
+        path.push({x: Math.abs(offset - 40), y: y});
+
+      for (y = 180; y >= 60; y -= 20)
+        path.push({x: Math.abs(offset - (70 + 3 * i)), y: y});
+
+      for (y = 60; y <= 180; y += 20)
+        path.push({x: Math.abs(offset - (100 + 5 * i)), y: y});
+
+      debug("Cinderella i =", i, ", offset =", offset);
+      this.linkTsums(path);
+    }
+  }
+  this.sleep(3000);
+  this.clearAllBubbles(10, 50, (Button.gameBubblesFrom.y + Button.gameBubblesTo.y) / 2, 300);
+}
+
+Tsum.prototype.useCinderellaSkillV3 = function() {
+  // tbd
 }
 
 Tsum.prototype.useSkill = function(board) {
@@ -1966,8 +1995,9 @@ Tsum.prototype.useSkill = function(board) {
     this.clearAllBubbles(1300);
     this.clearAllBubbles(10, 50, (Button.gameBubblesFrom.y + Button.gameBubblesTo.y) / 2);
   } else if(this.skillType === 'block_cinderella_s') {
-    this.sleep(1500);
-    this.useCinderellaSkill(board);
+    this.tap(Button.gameRand, 60);
+    this.sleep(1400);
+    this.useCinderellaSkillV1();
   } else if(this.skillType === 'block_woody2_s'){
     this.sleep(1800);
     this.tapDown({x: 540, y: 960}, 20);
@@ -2058,8 +2088,7 @@ Tsum.prototype.useSkill = function(board) {
     this.tap(Button.skillCptLy3, 10);
     this.sleep(550);
     this.tap(Button.skillCptLy3, 10);
-    this.sleep(500);
-    this.clearAllBubbles(0, 0, 1000);
+    this.clearAllBubbles(600, 0, 1000, 300);
   } else {
     this.sleep(this.skillInterval);
   }
