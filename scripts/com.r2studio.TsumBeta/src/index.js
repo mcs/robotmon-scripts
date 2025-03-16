@@ -201,7 +201,6 @@ var AbstractPage = {
     next: {x: 632, y: 1066},            // buy select / premium box button
     backNoMission: {x: 530, y: 1650},   // close button
     backWithMission: {x: 190, y: 1650}  // close button
-
   }
 };
 
@@ -445,18 +444,10 @@ var Page = {
     store: {x: 910, y: 1592}
   },
   TsumTsum2025StorePage: {
-    // needs to be before PrePage as it is more specific than the other page
     name: 'TsumTsumStorePage',
-    colors: AbstractPage.TsumStore.colors2025OverviewGeneral.concat(AbstractPage.TsumStore.colors2025OverviewSelected),
-    back: {x: 190, y: 1650},
-    next: {x: 910, y: 690}
-  },
-  TsumTsum2025StorePrePage: {
-    name: 'TsumTsumStorePrePage',
     colors: AbstractPage.TsumStore.colors2025OverviewGeneral,
     back: {x: 190, y: 1650},
-    store: {x: 430, y: 1200},
-    next: {x: 430, y: 1200}
+    next: {x: 1000, y: 690, r: 238, g: 172, b: 8}
   },
   TsumTsumStorePageTwoBoxesNoMission: {
     name: 'TsumTsumStorePage',
@@ -2865,6 +2856,7 @@ Tsum.prototype.taskAutoBuyBoxes = function() {
       if (countUnknownPages > 10) {
         this.exitUnknownPage();
         countUnknownPages = 0;
+        this.autobuyBoxes = 0;
       }
     }
     this.sleep(500);
