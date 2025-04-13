@@ -2814,7 +2814,7 @@ Tsum.prototype.taskAutoBuyBoxes = function() {
   this.lastVisitedPages.autoBuyBoxesStore = true;
   log("Start buying ", this.autobuyBoxes, "boxes - taskAutoBuyBoxes");
   var countUnknownPages = 0, countSamePage = 0;
-  while (this.isRunning && this.autobuyBoxes > 0 && countSamePage < 10) {
+  while (this.isRunning && this.autobuyBoxes >= 0 && countSamePage < 60) {
     this.requestTsumMonitor();
     var page = this.findPageObject(1, 200);
     if (page != null) {
@@ -2823,12 +2823,17 @@ Tsum.prototype.taskAutoBuyBoxes = function() {
       this.tap(page.next);
       if (page === lastPage) {
         countSamePage++;
-        debug("countSamePage = ", countSamePage);
+        debug("countSamePage =", countSamePage);
+        if (countSamePage % 10 === 0) {
+          debug("I'm stuck?!");
+          this.exitUnknownPage();
+        }
       } else {
         countSamePage = 0;
       }
-      if (countSamePage > 30) {
+      if (countSamePage === 30) {
         // we didn't change the page for at least 15 seconds (30 * 0.500) so try escaping from wherever we are
+        log("I'm stuck on buying!");
         this.exitUnknownPage();
         countSamePage = 0;
         this.autobuyBoxes = 0;
@@ -2851,9 +2856,14 @@ Tsum.prototype.taskAutoBuyBoxes = function() {
       }
       lastPage = page;
     } else {
-      debug("Unknown page");
       countUnknownPages++;
-      if (countUnknownPages > 10) {
+      if (countUnknownPages === 20) {
+        // sometimes the final confirmation after having bought doesn't get clicked, so let's use this method
+        log("Stuck?");
+        this.exitUnknownPage();
+      } else if (countUnknownPages > 30) {
+        // this probably didn't work on 10, but let's try it again as we don't have something better here
+        log("Stuck! Exit...");
         this.exitUnknownPage();
         countUnknownPages = 0;
         this.autobuyBoxes = 0;
