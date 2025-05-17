@@ -177,6 +177,7 @@ var settings = [
             default: 'burst',
             dropdown: [
                 {key: 'burst', title: 'Burst', title_zh_TW: '消除系'},
+                {key: 'burst_bubbles', title: 'Burst bubbles', title_zh_TW: '消除系2'},
                 {key: 'block_donald_s', title: 'Donald', title_zh_TW: '唐老鴨'},
                 {key: 'block_donaldx_s', title: 'Holiday Donald', title_zh_TW: '假日唐老鴨'},
                 {key: 'block_lukej_s', title: 'Jedi Luke', title_zh_TW: '絕地路克'},
