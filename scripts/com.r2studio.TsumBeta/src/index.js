@@ -2056,6 +2056,9 @@ Tsum.prototype.useSkill = function(board) {
     this.clearAllBubbles(600, 0, 1000, 300);
   } else {
     this.sleep(this.skillInterval);
+    if (this.skillType === 'burst_bubbles') {
+      this.clearAllBubbles(0, 0, 1000, 300);
+    }
   }
   return true;
 }
