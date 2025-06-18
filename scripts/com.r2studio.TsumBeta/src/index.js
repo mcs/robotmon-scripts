@@ -2054,6 +2054,21 @@ Tsum.prototype.useSkill = function(board) {
     this.sleep(550);
     this.tap(Button.skillCptLy3, 10);
     this.clearAllBubbles(600, 0, 1000, 300);
+  } else if (this.skillType === 'block_lightning_mcqueen_plus_s'){
+    this.sleep(2000);
+    for (i = 1; i <= 20; i+=1) {
+      this.sleep(50);
+      img = this.playScreenshotSquare();
+      color = getImageColor(img, 120, 184);
+      if (isSameColor({r: 245, g: 0, b: 0}, color, 10)) {
+        // max speed detected
+        this.tap({x: 670, y: 1050}, 10);  // tap somewhere into the game
+        i = 20;
+      }
+      releaseImage(img);
+    }
+    this.sleep(2500);
+    // this.clearAllBubbles(600, 0, 1000, 300);
   } else {
     this.sleep(this.skillInterval);
     if (this.skillType === 'burst_bubbles') {
