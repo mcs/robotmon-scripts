@@ -1912,6 +1912,8 @@ Tsum.prototype.useSkill = function(board) {
     this.tap(Button.skillLuke2, 30);
     this.tap(Button.skillLuke3, 30);
     this.tap(Button.skillLuke4, 30);
+  } else if (this.skillType === 'block_lightning_mcqueen_plus_s') {
+    this.sleep(200);  // let tsums settle
   }
   this.tap(Button.gameSkill1);
   this.sleep(30);
