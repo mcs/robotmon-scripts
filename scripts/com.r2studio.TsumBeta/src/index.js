@@ -1705,9 +1705,11 @@ Tsum.prototype.goGamePlayingPage = function() {
       // check again
       page = this.findPage(1, 500);
       if (page === 'GamePlaying') {
+        this.isStartupPhase = false;
         return;
       }
     } else if (page === 'GamePause') {
+      this.isStartupPhase = false;
       this.tap(pageObj.next);
       this.sleep(500);
     } else if (page === 'unknown') {
@@ -2063,7 +2065,8 @@ Tsum.prototype.useSkill = function(board) {
     this.sleep(2500);
     // this.clearAllBubbles(600, 0, 1000, 300);
   } else {
-    this.sleep(this.skillInterval);
+    this.tap(Button.gameRand, 100); // randomize tsums if tsum supports it
+    this.sleep(this.skillInterval - 100);
     if (this.skillType === 'burst_bubbles') {
       this.clearAllBubbles(0, 0, 1000, 300);
     }
