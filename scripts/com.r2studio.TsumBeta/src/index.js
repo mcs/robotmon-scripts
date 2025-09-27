@@ -485,8 +485,8 @@ var Page = {
       {x: 964, y: 1265, r: 33, g: 73, b: 115, match: true, threshold: 30},
       {x: 534, y: 1840, r: 33, g: 190, b: 231, match: true, threshold: 30}
     ],
-    back: {x: 500, y: 500},
-    next: {x: 500, y: 500}
+    back: {x: 500, y: 1600},
+    next: {x: 500, y: 1600}
   },
   TapOpenPageCapsule: {
     name: 'TapOpenPage',
@@ -499,8 +499,8 @@ var Page = {
       {x: 964, y: 1265, r: 33, g: 73, b: 115, match: true, threshold: 30},
       {x: 534, y: 1840, r: 33, g: 190, b: 231, match: true, threshold: 30}
     ],
-    back: {x: 500, y: 500},
-    next: {x: 500, y: 500}
+    back: {x: 500, y: 1600},
+    next: {x: 500, y: 1600}
   },
   BoxPurchasedPage: {
     name: 'BoxPurchasedPage',
@@ -758,14 +758,15 @@ var Page = {
     back: {x: 576, y: 1660},
     next: {x: 576, y: 1660}
   },
-  InvitePage: {
-    name: 'InvitePage', // the close button at left bottom
-    colors: [
-      {x: 180, y: 1592, r: 238, g: 180, b: 11, match: true, threshold: 80}
-    ],
-    back: {x: 176, y: 1592},
-    next: {x: 176, y: 1592}
-  },
+  // *** Following commented out because detection is way too unspecific and I don't know what it should detect.
+  // InvitePage: {
+  //   name: 'InvitePage', // the close button at left bottom
+  //   colors: [
+  //     {x: 180, y: 1592, r: 238, g: 180, b: 11, match: true, threshold: 80}
+  //   ],
+  //   back: {x: 176, y: 1592},
+  //   next: {x: 176, y: 1592}
+  // },
   ReceiveSkillTicket: {
     name: 'ReceiveSkillTicket',
     colors: [
@@ -1553,6 +1554,17 @@ Tsum.prototype.findPageObject = function(times, timeout) {
 
 Tsum.prototype.findPage = function(times, timeout) {
   var page = this.findPageObject(times, timeout);
+  if (page !== null) {
+    var name = page.name;
+    switch (name) {
+        case "GamePause":
+        case "GamePlaying":
+        case "StartPage":
+        case "TsumsPage":
+        case "TsumTsumStorePage":
+          this.isStartupPhase = false;
+    }
+  }
   return page != null ? page.name : 'unknown';
 }
 
@@ -1760,7 +1772,7 @@ Tsum.prototype.goTsumTsumStorePage = function() {
     for (var i = 0; i < 3; i++) {
       this.tap(this.findPageObject().store);
       this.sleep(3000);
-      var page = this.findPageObject(2, 2000);
+      var page = this.findPageObject(5, 2000);
       pageName = page != null ? page.name : 'unknown';
       log("Pg: ", pageName);
       if (page !== null && page.name === 'TsumTsumStorePage') {
@@ -2063,7 +2075,8 @@ Tsum.prototype.useSkill = function(board) {
     this.sleep(2500);
     // this.clearAllBubbles(600, 0, 1000, 300);
   } else {
-    this.sleep(this.skillInterval);
+    this.tap(Button.gameRand, 100); // randomize tsums if tsum supports it
+    this.sleep(this.skillInterval - 100);
     if (this.skillType === 'burst_bubbles') {
       this.clearAllBubbles(0, 0, 1000, 300);
     }
