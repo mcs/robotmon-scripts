@@ -1359,7 +1359,7 @@ Tsum.prototype.isAppOn = function() {
   if (!this.autoLaunch) {
     return true;
   }
-  var result = execute('dumpsys window windows').split('mCurrentFocus');
+  var result = execute('dumpsys window').split('mCurrentFocus');
   if (result.length < 2) {
     return false;
   }
@@ -1717,9 +1717,11 @@ Tsum.prototype.goGamePlayingPage = function() {
       // check again
       page = this.findPage(1, 500);
       if (page === 'GamePlaying') {
+        this.isStartupPhase = false;
         return;
       }
     } else if (page === 'GamePause') {
+      this.isStartupPhase = false;
       this.tap(pageObj.next);
       this.sleep(500);
     } else if (page === 'unknown') {
@@ -3007,6 +3009,7 @@ Tsum.prototype.isOnScreenshot = function(img, pageObject, colorDiff) {
 
 function start(settings) {
   ts = new Tsum(settings['jpVersion'], settings['specialScreenRatio'], settings['langTaiwan'] ? LogsTW : Logs);
+  ts.settings = settings
   log(ts.logs.start);
   ts.debug = settings['debugGame'];
   if (settings['bonus5to4']) {
