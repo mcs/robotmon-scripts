@@ -2863,8 +2863,18 @@ Tsum.prototype.taskAutoBuyBoxes = function() {
         var img = this.screenshot();
         var nextColor = this.getColor(img, page.next);
         releaseImage(img);
-        if (!isSameColor(page.next, nextColor, 50) || this.autobuyBoxes === 0) {
+        if (this.autobuyBoxes === 0) {
+          log("Buying finished");
           break;
+        }
+        if (!isSameColor(page.next, nextColor, 50)) {
+          // wait and test again
+          this.sleep(500);
+          page = this.findPageObject(1, 200);
+          if (page.name === "TsumTsumStorePage" && !isSameColor(page.next, nextColor, 50)) {
+            log("Finish with", this.autobuyBoxes, "boxes zu buy due to empty box");
+            break;
+          }
         }
       }
       this.tap(page.next);
