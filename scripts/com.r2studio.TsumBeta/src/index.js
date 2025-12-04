@@ -2057,12 +2057,21 @@ Tsum.prototype.useSkill = function(board) {
     this.tap(Button.skillCptLy1, 10);
     this.sleep(20);
     this.tap(Button.skillCptLy2, 10);
-    this.sleep(530);
-    this.tap(Button.skillCptLy3, 10);
-    this.sleep(500);
-    this.tap(Button.skillCptLy3, 10);
-    this.sleep(500);
-    this.tap(Button.skillCptLy3, 10);
+    if (this.skillLevel >= 2) {
+      // 3rd tap
+      this.sleep(530);
+      this.tap(Button.skillCptLy3, 10);
+    }
+    if (this.skillLevel >= 4) {
+      // 4th tap
+      this.sleep(500);
+      this.tap(Button.skillCptLy3, 10);
+    }
+    if (this.skillLevel === 6) {
+      // 5th tap
+      this.sleep(500);
+      this.tap(Button.skillCptLy3, 10);
+    }
     this.clearAllBubbles(600, 0, 1000, 300);
   } else if (this.skillType === 'block_lightning_mcqueen_plus_s'){
     this.sleep(2000);
